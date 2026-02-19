@@ -15,3 +15,8 @@ if [[ ! -f "/usr/include/uuid/uuid.h" ]]; then
   mkdir -p /usr/include/uuid/
   ( cd /usr/include/uuid/ ; ln -s ../uuid.h )
 fi
+
+if [[ ! -f "/usr/lib/libuuid.so" ]]; then
+  echo "Adding link from /usr/lib/libuuid.so to /usr/lib/libuuid.so.1"
+  ( cd /usr/lib ; ln -s libuuid.so.1 libuuid.so )
+fi

@@ -67,12 +67,12 @@ fi
 cd "${worktreeDir}"
 git submodule update --init
 
-tag=$(git describe --tags --dirty)
-echo "Tag: $tag"
+tag=$(git describe --tags --dirty || true)
 if [[ -z "$tag" ]]; then
-  echo "Error: Could not determine tag" >&2
+  echo "Error: Could not determine tag of repo: ${worktreeDir}; try running with \"-c\" parameter to clean up first" >&2
   exit 1
 fi
+echo "Tag: $tag"
 
 targetDir=${baseDir}/target/build/${tag}
 mkdir -p "${targetDir}"

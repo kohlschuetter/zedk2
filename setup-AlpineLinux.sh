@@ -10,6 +10,12 @@ if [[ $(whoami) != "root" ]]; then
 fi
 
 apk add bash alpine-sdk git libuuid ossp-uuid-dev nasm util-linux-misc zip rustup python3
+
+if [[ $(uname -m) != "x86_64" ]]; then
+  echo "Non-x64 platform detected; adding crosscompiler"
+  apk add gcc-x86_64-elf
+fi
+
 if [[ ! -f "/usr/include/uuid/uuid.h" ]]; then
   echo "Adding link from /usr/include/uuid/uuid.h to /usr/include/uuid.h"
   mkdir -p /usr/include/uuid/

@@ -49,6 +49,11 @@ fi
 shift $#
 . ./edksetup.sh
 
+if [[ $(uname -m) != "x86_64" ]]; then
+  echo "Non-x64 platform detected; enabling crosscompiler"
+  export GCC5_BIN=x86_64-elf-
+fi
+
 echo Targets: ${targets[@]}
 
 set -e

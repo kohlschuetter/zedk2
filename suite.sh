@@ -4,11 +4,19 @@
 # Copyright 2026 Christian Kohlschuetter
 #
 
+echo zedk suite
+echo https://github.com/kohlschuetter/zedk
+echo
+
 cd $(dirname $0)
 targetDir=target/suite
 zipOut=$(pwd)/target/zedk2.zip
 rm -rf ${targetDir}
 mkdir -p ${targetDir}
+
+echo "Using compiler: $(gcc --version | head -n 1)"
+echo "Note: Tested with GCC 14 and 15; will fail with clang-gcc."
+echo
 
 initArgs=()
 
@@ -26,7 +34,11 @@ done
 set -e
 
 # latest DisplayEngineDxe has a bug with fonts, so let's use an older one
-tagDisplayEngineDxe=edk2-stable202211
+# NOTE: builds older than 202502 won't build with GCC 15 or newer
+#tagDisplayEngineDxe=edk2-stable202211
+# font bug got introduced somewhere betwen 202508 and 202511
+tagDisplayEngineDxe=edk2-stable202508
+#tagDisplayEngineDxe=edk2-stable202511
 ./scripts/init.sh ${initArgs[@]} ${tagDisplayEngineDxe}
 ./scripts/build.sh MdeModulePkg/Universal/DisplayEngineDxe
 

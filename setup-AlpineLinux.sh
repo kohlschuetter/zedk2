@@ -9,7 +9,7 @@ if [[ $(whoami) != "root" ]]; then
   exit 1
 fi
 
-apk add bash alpine-sdk git libuuid ossp-uuid-dev nasm util-linux-misc zip rustup
+apk add bash alpine-sdk git libuuid ossp-uuid-dev nasm util-linux-misc zip rustup python3
 if [[ ! -f "/usr/include/uuid/uuid.h" ]]; then
   echo "Adding link from /usr/include/uuid/uuid.h to /usr/include/uuid.h"
   mkdir -p /usr/include/uuid/

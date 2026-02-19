@@ -6,12 +6,16 @@
 
 set -e
 verbose=0
-clean=1
+clean=0
 
 while [[ 1 ]]; do
 case $1 in
   -v)
     verbose=1
+    shift
+    ;;
+  -c)
+    clean=1
     shift
     ;;
   -C)
@@ -28,19 +32,57 @@ refName=$ref
 refName=${refName:=<current>}
 cd $(dirname $0)
 
-echo Cleaning target folder...
-mkdir -p target
-rm -rfv target/*
+baseDir=$(pwd)
 
-echo "Resetting edk2 repo... ref=${refName}"
-git submodule update --init
-cd edk2
-git checkout --quiet $ref
-if [[ $clean -eq 1 ]]; then
-  echo "Cleaning..."
-  git clean --quiet -xdf
+if [[ ! -e "edk2/.git" ]]; then
+  git submodule update --init --recursive
 fi
+
+mkdir -p ${baseDir}/worktrees
+worktreeAdd=1
+if [[ -z "$ref" ]]; then
+  worktreeDirRel=edk2
+  worktreeAdd=0
+else
+  worktreeRef=${ref}
+  worktreeDirRel=worktrees/${worktreeRef}
+fi
+(
+  cd ${baseDir}/worktrees
+  rm -f current
+  ln -sf ../${worktreeDirRel} current
+)
+worktreeDir="${baseDir}/${worktreeDirRel}"
+
+if [[ $worktreeAdd -eq 1 ]]; then
+  cd edk2
+  echo "Resetting edk2 repo... ref=${refName}"
+  if [[ $clean -eq 1 ]]; then
+    echo "Cleaning..."
+    rm -rf "$worktreeDir"
+    git worktree add -f "${worktreeDir}" $ref
+  else
+    git worktree add "${worktreeDir}" $ref || true
+  fi
+fi
+
+cd "${worktreeDir}"
 git submodule update --init
+
+tag=$(git describe --tags --dirty)
+echo "Tag: $tag"
+if [[ -z "$tag" ]]; then
+  echo "Error: Could not determine tag" >&2
+  exit 1
+fi
+
+targetDir=${baseDir}/target/build/${tag}
+mkdir -p "${targetDir}"
+
+if [[ $clean -eq 1 ]]; then
+  echo Cleaning target folder: ${targetDir}
+  rm -rfv "${targetDir}/"*
+fi
 
 echo "Building BaseTools..."
 

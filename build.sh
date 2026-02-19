@@ -6,11 +6,23 @@
 
 cd $(dirname $0)
 
-curDir=$(pwd)
-targetDir="${curDir}/target"
-printf "Writing files to: $targetDir\n"
+baseDir=$(pwd)
 
-cd edk2
+set -e
+cd worktrees/current
+edkDir=$(pwd)
+
+tag=$(git describe --tags --dirty)
+targetDir=${baseDir}/target/build/${tag}
+
+printf "Writing files to: $targetDir\n\n"
+mkdir -p "$targetDir"
+
+(
+  cd ${baseDir}/target/build
+  rm -f current
+  ln -sf ${tag} current
+)
 
 export WORKSPACE=
 export EDK_TOOLS_PATH=
@@ -70,5 +82,5 @@ for target in ${targets[@]}; do
       ;;
   esac  
 
-  cp -av "${curDir}/edk2/Build/${buildName}/RELEASE_GCC5/X64/${efiName}.efi" "${targetDir}/${targetName}.efi"
+  cp -av "${edkDir}/Build/${buildName}/RELEASE_GCC5/X64/${efiName}.efi" "${targetDir}/${targetName}.efi"
 done

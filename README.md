@@ -21,11 +21,17 @@ With respect to providing access to the Setup interface, _zedk_ is inspired by "
 
 ## How
 
+### Running the binaries
+
 Once copied to a USB stick, you can boot your computer directly to a UEFI shell, and access the provided binaries.
 
 Binaries are provided on the [releases page](https://github.com/kohlschuetter/zedk/releases). 
 
 Unzip the `zedk.zip` to a FAT32-formatted USB-stick. Reboot your computer use the Boot-Menu (F12) to select your USB drive. Alternatively, change the boot order to prioritize the USB flash drive over all other drives. Make sure _Secure Boot_ is disabled.
+
+Once the UEFI Shell boots, follow the [instructions](src/suite/readme-zedk.txt) on screen.
+
+### Building from source
 
 The build system of _EDK II_ (edk2) is hard to figure out and easy to get wrong. _zedk_ changes that.
 
@@ -41,7 +47,7 @@ To build _zedk_ from scratch, run `./build.sh` from this repository. The zip art
 
 ## Where
 
-- zedk should run on all UEFI systems.
+- zedk should run on most x86_64 (Intel/AMD 64-bit) UEFI systems.
 - Additional hidden BIOS features are automatically unlocked for certain AMI UEFI setups (wherever _AmiSetupFormSetVar_). Tested systems so far:
   - Lenovo ThinkStation P330 Tiny
   - Lenovo ThinkCentre M920q/M920x Tiny

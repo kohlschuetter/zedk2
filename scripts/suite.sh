@@ -18,7 +18,7 @@ echo "Using compiler: $(gcc --version | head -n 1)"
 echo "Note: Tested with GCC 14 and 15; will fail with clang-gcc."
 echo
 
-initArgs=()
+initArgs=(-v)
 
 while [[ 1 ]]; do
 case $1 in
